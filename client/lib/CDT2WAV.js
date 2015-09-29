@@ -76,21 +76,25 @@ CDT2WAV = class CDT2WAV {
         this.blocks = {};
 
         this.countBlocks();
-        this.output = new CDT2WAVWavOutput(this.frequency);
+        this.output = new CDT2WAVWAVOutput(this.frequency);
 
-        this.debug = false;
+        this.debug = true;
 
         this.convertPass();
 
         let dataLength = this.output.outputTell();
-        let data = null;
 
+        console.log('dataLength = ' + dataLength);
         if (dataLength > 0) {
-            data = [];
-            this.output.setOutputBuffer(data);
+
+            this.output.initBuf();
             this.convertPass();
         }
-        return data;
+        //return data;
+    }
+
+    play() {
+        this.output.playWav();
     }
 
     getID(id) {
@@ -189,7 +193,7 @@ CDT2WAV = class CDT2WAV {
         this.pause = this.get2(this.data);
         this.datalen = this.get2(this.data+2);
         this.data += 4;
-        if (this.inpbuf[this.data] == 0x00)
+        if (this.inpbuf[this.data] == 0)
             this.pilot = 8064;
         else
             this.pilot = 3220;
@@ -284,7 +288,7 @@ CDT2WAV = class CDT2WAV {
             this.datapos++;
         }
         this.output.toggleAmp(); // Changed on 26-01-2005
-        if (pause != 0) this.output.pause(this.pause);
+        if (this.pause != 0) this.output.pause(this.pause);
     }
 
     // ...Pause or Stop the Tape
@@ -350,7 +354,7 @@ CDT2WAV = class CDT2WAV {
             this.currentBlock=this.call_pos;
         } else {
             this.currentBlock = this.call_pos;
-            this.data = this.blockStart[this.currentBlock]+1;
+            this.data = this.blockstarts[this.currentBlock]+1;
             this.jump = this.inpbuf[this.data+this.call_cur*2+2] + this.inpbuf[this.data+this.call_cur*2+3]*256;
             this.currentBlock+=this.jump;
             this.currentBlock--;
@@ -387,12 +391,11 @@ CDT2WAV = class CDT2WAV {
 
             this.ids[this.currentBlock] = this.getID(this.id);
             if (this.debug) {
-                console.log("Block: " + this.getBlock(this.currentBlock) + " - ID: " + this.getID(this.id));
+                console.log("Block: " + this.getBlock(this.currentBlock) + " - ID: " + this.getID(this.id) + " (" + this.id + "}");
                 //console.log("ID is " + Util.hex(id));
-                console.log("ID is " + this.id);
             }
 
-            data = this.blockstarts[this.currentBlock] + 1;
+            this.data = this.blockstarts[this.currentBlock] + 1;
 
             switch (this.id) {
 
@@ -490,9 +493,12 @@ CDT2WAV = class CDT2WAV {
 
                 // Play actual DATA
 
+                this.datapos = 0;
                 while (this.datalen > 0) {
-                    if (this.datalen != 1) this.bitcount = 8;
-                    else this.bitcount = this.lastbyte;
+                    if (this.datalen != 1)
+                        this.bitcount = 8;
+                    else
+                        this.bitcount = this.lastbyte;
 
                     this.databyte = this.inpbuf[this.data + this.datapos];
 
