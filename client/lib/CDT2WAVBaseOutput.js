@@ -13,6 +13,7 @@ CDT2WAVBaseOutput = class CDT2WAVBaseOutput {
         // INSTANCE VARIABLES
         //
 
+
         this.z80_freq = 3500000.0; // Z80 frequency in Hz
         this.buf = null;			// output buffer
         this.bufPos = 0;

@@ -97,6 +97,10 @@ CDT2WAV = class CDT2WAV {
         this.output.playWav();
     }
 
+    spectrum(canvas) {
+        this.output.spectrum(canvas);
+    }
+
     getID(id) {
         let ret = null;
 

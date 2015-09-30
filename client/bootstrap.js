@@ -7,6 +7,7 @@ Meteor.startup(function() {
             console.log(cdt.countBlocks());
             cdt.convert();
             cdt.play();
+            cdt.spectrum(document.getElementById('canv'));
         });
 
 });
