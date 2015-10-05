@@ -174,6 +174,11 @@ CDT2WAVBaseOutput = class CDT2WAVBaseOutput {
         this.write(numsamples);
     }
 
+
+    calculateBufLength(samples) {
+        return (samples*1000.0)/this.frequency;
+    }
+
     /**
      * Waits for a number of milliseconds
      *
@@ -181,11 +186,10 @@ CDT2WAVBaseOutput = class CDT2WAVBaseOutput {
      */
     pause(ms) {
         let p;
-        //if (curr!=(numblocks-1))
-        //{
-        p = Math.floor((( ms) * this.frequency)/1000.0);
+
+        p = Math.floor((ms * this.frequency)/1000.0);
         this.play(p);
-        //}
+
     }
 
     stop() {

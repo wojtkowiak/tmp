@@ -11,3 +11,7 @@ Meteor.startup(function() {
         });
 
 });
+
+//www.cpcwiki.eu/index.php/Format:TAP_tape_image_file_format
+//http://www.cpc-power.com/CdtView.php?fiche=4093&slot=13&rang=6#block41
+//http://www.cpc-power.com/CdtView.php?fiche=185&slot=20&rang=0

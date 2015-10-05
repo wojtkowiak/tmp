@@ -222,7 +222,7 @@ CDT2WAV = class CDT2WAV {
         this.datalen = this.get3(this.data+15);
         this.data+=18;
         if (this.debug)
-            console.log("Pilot is: " +this.pilot + " pause is: " + this.pause + " Length is: " + this.datalen);
+            console.log("Pilot is: " +this.pilot + " pause is: " + this.pause + " Length is: " + this.datalen + " filename: " + String.fromCharCode.apply(null, this.inpbuf.slice(this.data, this.data + 12)));
     }
 
     // ...Pure Tone

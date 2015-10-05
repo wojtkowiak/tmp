@@ -15,13 +15,17 @@ CDT2WAVWAVOutput = class CDT2WAVWAVOutput extends CDT2WAVBaseOutput {
         var channels = 1;
         // Create an empty two-second stereo buffer at the
         // sample rate of the AudioContext
-        var frameCount = this.frequency * 60 * 30;
-        this.myArrayBuffer = this.audioCtx.createBuffer(2, frameCount, this.frequency);
+
 
 
     }
 
     initBuf() {
+
+
+        var frameCount = this.frequency * (this.calculateBufLength(this.bufPos) / 1000.0);
+        this.myArrayBuffer = this.audioCtx.createBuffer(2, frameCount, this.frequency);
+
         this.bufPos = 0;
         this.buf = this.myArrayBuffer.getChannelData(0);
     }
