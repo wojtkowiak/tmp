@@ -221,8 +221,40 @@ CDT2WAV = class CDT2WAV {
         this.pause = this.get2(this.data+13);
         this.datalen = this.get3(this.data+15);
         this.data+=18;
-        if (this.debug)
-            console.log("Pilot is: " +this.pilot + " pause is: " + this.pause + " Length is: " + this.datalen + " filename: " + String.fromCharCode.apply(null, this.inpbuf.slice(this.data, this.data + 12)));
+        if (this.debug) {
+            console.log("Pilot is: " + this.pilot + " pause is: " + this.pause + " Length is: " + this.datalen);
+            if (this.inpbuf[this.data] === 0x2C) {
+
+                this.filename = String.fromCharCode.apply(null, this.inpbuf.slice(this.data+1, this.data + 17));
+                this.blockNumber = this.inpbuf[this.data+17];
+                this.lastBlock = this.inpbuf[this.data+18] !== 0;
+                let fileType = this.inpbuf[this.data+19];
+
+                this.fileProtected = (fileType & 1) ? true : false;
+                this.fileTypeString = '';
+                fileType = fileType >>> 1;
+
+
+                if ((fileType & 3) == 3) {
+                    this.fileTypeString = 'ASCII';
+                } else if ((fileType & 2) === 2) {
+                    this.fileTypeString = 'Screen image';
+                } else if ((fileType & 1) === 1) {
+                    this.fileTypeString = 'Binary';
+                } else {
+                    this.fileTypeString = 'Internal BASIC';
+                }
+
+                this.dataBytes = this.get2(this.data+20);
+                this.firstBlock = this.inpbuf[this.data+24] !== 0;
+                this.totalBytes = this.get2(this.data+25);
+
+                console.log(this.filename + ' blockNumber: ' + this.blockNumber + ' firsBlock: ' + this.firstBlock + ' lastBlock: ' + this.lastBlock + ' protected: ' + this.fileProtected + ' type: ' + this.fileTypeString + ' dataBytes: ' + this.dataBytes + ' totalBytes: ' + this.totalBytes);
+            }
+            //
+
+
+        }
     }
 
     // ...Pure Tone
@@ -454,6 +486,8 @@ CDT2WAV = class CDT2WAV {
 
                 // Ignored
                 case 0x30: // Description
+                    console.log(String.fromCharCode.apply(null, this.inpbuf.slice(this.blockstarts[this.currentBlock])));
+                    break;
                 case 0x31: // Message
                 case 0x32: // Archive Info
                 case 0x34: // Emulation info
@@ -583,6 +617,37 @@ CDT2WAV = class CDT2WAV {
             pos++;
             switch(this.inpbuf[pos - 1])
             {
+                /*case 0x10: pos += get2(inpbuf, pos+0x02) + 0x04; break;
+                case 0x11: pos += get3(inpbuf, pos+0x0F) + 0x12; break;
+                case 0x12: pos += 0x04; break;
+                case 0x13: pos += (inpbuf[pos+0x00]*0x02) + 0x01; break;
+                case 0x14: pos += get3(inpbuf, pos+0x07) + 0x0A; break;
+                case 0x15: pos += get3(inpbuf, pos+0x05) + 0x08; break;
+                case 0x16: pos += get4(inpbuf, pos+0x00) + 0x04; break;
+                case 0x17: pos += get4(inpbuf, pos+0x00) + 0x04; break;
+
+                case 0x20: pos += 0x02; break;
+                case 0x21: pos += inpbuf[pos+0x00] + 0x01; break;
+                case 0x22: break;
+                case 0x23: pos += 0x02; break;
+                case 0x24: pos += 0x02; break;
+                case 0x25: break;
+                case 0x26: pos += get2(inpbuf, pos+0x00) * 0x02 + 0x02; break;
+                case 0x27: break;
+                case 0x28: pos += get2(inpbuf, pos+0x00) + 0x02; break;
+                case 0x2A: pos += 0x04; break;
+
+                case 0x30: pos += inpbuf[pos+0x00] + 0x01; break;
+                case 0x31: pos += inpbuf[pos+0x01] + 0x02; break;
+                case 0x32: pos += get2(inpbuf, pos+0x00) + 0x02; break;
+                case 0x33: pos += (inpbuf[pos+0x00]*0x03) + 0x01; break;
+                case 0x34: pos += 0x08; break;
+                case 0x35: pos += get4(inpbuf, pos+0x10) + 0x14; break;
+
+                case 0x40: pos += get3(inpbuf, pos+0x01) + 0x04; break;
+
+                case 0x5A: pos += 0x09; break;*/
+
                 case 16: // '\020'
                     pos += this.get2(pos + 2) + 4;
                     break;
@@ -725,7 +790,7 @@ CDT2WAV = class CDT2WAV {
                 case 88: // 'X'
                 case 89: // 'Y'
                 default:
-                    console.log(this.inpbuf[pos - 1]);
+                    alert(this.inpbuf[pos - 1]);
                     return -1;
 
                 case 34: // '"'
