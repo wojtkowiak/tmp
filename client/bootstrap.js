@@ -1,14 +1,17 @@
 Meteor.startup(function() {
 
-    HTTP.call("GET", "http://localhost:3000/action5.cdt",
+    /*HTTP.call("GET", "http://meteor.local/1942.cdt",
         { responseType: "arraybuffer"},
         function (error, result) {
+            console.log('gota the file');
             var cdt = new CDT2WAV(result.content, 44100, true);
             console.log(cdt.countBlocks());
             cdt.convert();
             cdt.play();
             cdt.spectrum(document.getElementById('canv'));
-        });
+        });*/
+
+    console.log('start');
 
 });
 

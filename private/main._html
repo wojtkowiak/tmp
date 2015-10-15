@@ -1,0 +1,7 @@
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<canvas width="200" height="200" id="canv"></canvas>
+</body>

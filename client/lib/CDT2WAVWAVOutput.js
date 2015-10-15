@@ -99,7 +99,7 @@ CDT2WAVWAVOutput = class CDT2WAVWAVOutput extends CDT2WAVBaseOutput {
         gainNode.connect(this.audioCtx.destination);
 
         gainNode.gain.value = 0.01;
-        source.start();
+        source.start(this.audioCtx.currentTime);
     }
 
     /**

@@ -225,7 +225,7 @@ CDT2WAV = class CDT2WAV {
             console.log("Pilot is: " + this.pilot + " pause is: " + this.pause + " Length is: " + this.datalen);
             if (this.inpbuf[this.data] === 0x2C) {
 
-                this.filename = String.fromCharCode.apply(null, this.inpbuf.slice(this.data+1, this.data + 17));
+                this.filename = String.fromCharCode.apply(null, this.inpbuf.subarray(this.data+1, this.data + 17));
                 this.blockNumber = this.inpbuf[this.data+17];
                 this.lastBlock = this.inpbuf[this.data+18] !== 0;
                 let fileType = this.inpbuf[this.data+19];
